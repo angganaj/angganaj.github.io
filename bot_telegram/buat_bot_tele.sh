@@ -144,15 +144,16 @@ echo "------------------------------------------------"
 P_DIR=$(pwd)
 
 # Menghapus entri lama agar tidak duplikat, lalu menambah entri baru
-(crontab -l 2>/dev/null | grep -v "$P_DIR/main.py" | grep -v "$P_DIR/reboot.sh"; \
+# Perhatikan: Sekarang 0 */6 menjalankan restart.sh, bukan reboot.sh langsung
+(crontab -l 2>/dev/null | grep -v "$P_DIR/main.py" | grep -v "$P_DIR/reboot.sh" | grep -v "$P_DIR/restart.sh"; \
  echo "@reboot /bin/bash $P_DIR/reboot.sh"; \
- echo "0 */6 * * * /bin/bash $P_DIR/reboot.sh"; \
+ echo "0 */6 * * * /bin/bash $P_DIR/restart.sh"; \
  echo "@reboot cd $P_DIR && $P_DIR/venv/bin/python3 main.py > $P_DIR/bot.log 2>&1 &") | crontab -
 
 echo "------------------------------------------------"
 echo "OTOMATISASI CRONTAB BERHASIL!"
 echo "1. Bot jalan otomatis saat Startup."
-echo "2. Laporan status dikirim setiap 6 jam (00:00, 06:00, 12:00, 18:00)."
+echo "2. Bot akan RESTART & KIRIM LAPORAN setiap 6 jam."
 echo "------------------------------------------------"
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

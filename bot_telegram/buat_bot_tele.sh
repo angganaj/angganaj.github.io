@@ -8,14 +8,17 @@ read -p "Masukkan API BOT Telegram: " INPUT_TOKEN
 read -p "Masukkan Chat ID Telegram: " INPUT_ID
 
 # 1. Membuat file config.sh berdasarkan input
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 cat << EOF > config.sh
 #!/bin/bash
 NAMA="$INPUT_NAMA"
 TOKEN="$INPUT_TOKEN"
 CHAT_ID="$INPUT_ID"
 EOF
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # 2. Membuat file reboot.sh
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 cat << 'EOF' > reboot.sh
 #!/bin/bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -56,6 +59,7 @@ curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
      -d "parse_mode=Markdown" \
      -d "disable_web_page_preview=true"
 EOF
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # 3. Menyiapkan VENV dan Python Bot
 echo "--- Menyiapkan Python Bot (venv) ---"
@@ -63,8 +67,8 @@ echo "--- Menyiapkan Python Bot (venv) ---"
 sudo apt-get update && sudo apt-get install -y python3-venv
 python3 -m venv venv
 ./venv/bin/pip install python-telegram-bot
-
 # 4. Membuat file main.py (Versi Lengkap dengan Log & Path Absolut)
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 cat << 'EOF' > main.py
 import subprocess
 import os
@@ -117,7 +121,7 @@ if __name__ == '__main__':
         print("Bot standby... Tekan Ctrl+C untuk berhenti.")
         app.run_polling()
 EOF
-
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # 5. Izin eksekusi
 chmod +x config.sh reboot.sh main.py
 

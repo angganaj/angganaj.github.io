@@ -155,16 +155,30 @@ echo "1. Bot jalan otomatis saat Startup."
 echo "2. Laporan status dikirim setiap 6 jam (00:00, 06:00, 12:00, 18:00)."
 echo "------------------------------------------------"
 
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# 6. Membuat file restart.sh
+cat << 'EOF' > restart.sh
+#!/bin/bash
+P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+pkill -f "$P_DIR/main.py"
+sleep 1
+nohup $P_DIR/venv/bin/python3 $P_DIR/main.py > $P_DIR/bot.log 2>&1 &
+echo "Bot telah direstart!"
+EOF
+
+chmod +x restart.sh
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Jalankan notifikasi pertama sebagai tes
 ./reboot.sh
 
 echo "--- Menjalankan Bot di Latar Belakang ---"
 # Menjalankan bot tanpa mengunci terminal
 nohup ./venv/bin/python3 main.py > bot.log 2>&1 &
-
+clear
 echo "------------------------------------------------"
 echo "BOT SUDAH AKTIF!"
 echo "Anda bisa menutup terminal ini sekarang."
 echo "Silakan coba ketik /cek di Telegram."
 echo "------------------------------------------------"
+
 rm -- "$0"

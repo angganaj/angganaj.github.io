@@ -160,10 +160,18 @@ echo "------------------------------------------------"
 cat << 'EOF' > restart.sh
 #!/bin/bash
 P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Mematikan bot yang sedang berjalan
 pkill -f "$P_DIR/main.py"
-sleep 1
+sleep 2
+
+# Menjalankan bot kembali di background
 nohup $P_DIR/venv/bin/python3 $P_DIR/main.py > $P_DIR/bot.log 2>&1 &
+
 echo "Bot telah direstart!"
+
+# Mengirim laporan status ke Telegram
+/bin/bash "$P_DIR/reboot.sh"
 EOF
 
 chmod +x restart.sh

@@ -47,18 +47,17 @@ cat << 'EOC' > main.py && chmod +x main.py
 import subprocess
 import os
 import asyncio
-import sys
 import logging
 from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Defaults
 
-# 1. LOGGING: Agar kita bisa cek error di bot.log jika bot macet
+# 1. Logging untuk memantau error di bot.log
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
-# 2. LOCK PATH: Mengunci lokasi bot
+# 2. Kunci Path Absolut
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 os.chdir(BASE_DIR)
 
@@ -81,29 +80,26 @@ async def run_script(update: Update, script_name: str):
     chat_id_config = conf.get("CHAT_ID")
     
     if chat_id_user == chat_id_config:
+        # Gunakan Path Absolut agar tidak pernah "File Not Found"
         script_path = os.path.join(BASE_DIR, script_name)
         
         if not os.path.exists(script_path):
-            await update.message.reply_text(f"❌ File tidak ditemukan:\n`{script_path}`", parse_mode="Markdown")
+            await update.message.reply_text(f"❌ File tidak ditemukan di:\n`{script_path}`", parse_mode="Markdown")
             return
 
         status_msg = await update.message.reply_text(f"⏳ Menjalankan {script_name}...")
         
         try:
-            # Gunakan subprocess dengan timeout agar bot tidak hang jika skrip macet
             process = await asyncio.create_subprocess_exec(
                 "/bin/bash", script_path,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
-            # Beri batas waktu 2 menit per skrip
-            await asyncio.wait_for(process.communicate(), timeout=120)
-        except asyncio.TimeoutError:
-            await update.message.reply_text("⚠️ Skrip terlalu lama berjalan (Timeout).")
+            # Menunggu maksimal 5 menit
+            await asyncio.wait_for(process.communicate(), timeout=300)
         except Exception as e:
-            await update.message.reply_text(f"❌ Error: {str(e)}")
+            logging.error(f"Error executing {script_name}: {e}")
             
-        await asyncio.sleep(1) 
         try:
             await status_msg.delete()
         except:
@@ -120,8 +116,8 @@ async def cmd_5(u, c): await run_script(u, "5.sh")
 if __name__ == '__main__':
     if conf:
         TOKEN = conf.get("TOKEN")
-        # Menambahkan fitur 'get_updates_read_timeout' agar bot lebih tahan gangguan sinyal
-        app = ApplicationBuilder().token(TOKEN).read_timeout(30).write_timeout(30).build()
+        # Pengaturan koneksi yang lebih longgar untuk internet tidak stabil
+        app = ApplicationBuilder().token(TOKEN).connect_timeout(60).read_timeout(60).write_timeout(60).build()
         
         app.add_handler(CommandHandler("1", cmd_1))
         app.add_handler(CommandHandler("2", cmd_2))
@@ -129,40 +125,29 @@ if __name__ == '__main__':
         app.add_handler(CommandHandler("4", cmd_4))
         app.add_handler(CommandHandler("5", cmd_5))
         
-        print(f"Bot Aktif di: {BASE_DIR}")
-        # Jalankan dengan pola polling yang lebih stabil
+        print(f"Bot Aktif. Menggunakan folder: {BASE_DIR}")
+        # drop_pending_updates agar bot tidak mengerjakan perintah usang saat baru nyala
         app.run_polling(drop_pending_updates=True)
 EOC
 
 # 4. Membuat file restart.sh untuk restart bot
 cat << 'EOF' > restart.sh && chmod +x restart.sh
 #!/bin/bash
-
-# Mendapatkan lokasi direktori tempat skrip ini berada
 P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd $P_DIR
 
-echo "--- Memulai Proses Restart Bot ---"
-
-# 1. Memberikan izin eksekusi ulang pada semua file .sh
-chmod +x $P_DIR/*.sh
-chmod +x $P_DIR/main.py
-
-# 2. Memperbaiki referensi konfigurasi (jika masih 0config.sh diubah ke 0.sh)
-sed -i 's/0config.sh/0.sh/g' $P_DIR/*.sh
-
-# 3. Mematikan bot yang sedang berjalan (jika ada)
-echo "Menghentikan bot lama..."
-pkill -f "$P_DIR/main.py"
+# Matikan bot lama
+pkill -f "main.py"
 sleep 2
 
-# 4. Menjalankan kembali bot di latar belakang (background)
-echo "Menjalankan bot baru..."
+# Pastikan izin file benar
+chmod +x *.sh
+chmod +x main.py
+
+# Jalankan bot dengan Path Absolut
 nohup $P_DIR/venv/bin/python3 $P_DIR/main.py > $P_DIR/bot.log 2>&1 &
 
-echo "------------------------------------------------"
-echo "BOT BERHASIL DIRESTART!"
-echo "Log dapat dilihat di: tail -f bot.log"
-echo "------------------------------------------------"
+echo "Bot telah direstart di folder $P_DIR"
 EOF
 
 sleep 5

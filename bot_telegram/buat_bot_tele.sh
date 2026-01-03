@@ -1,24 +1,24 @@
 #!/bin/bash
 
 echo "=== Setup Notifikasi & Bot Raspberry Pi ==="
-# # Meminta input dari user
-# clear
-# read -p "Masukkan Nama perangkat  : " INPUT_NAMA
-# read -p "Masukkan API BOT Telegram: " INPUT_TOKEN
-# read -p "Masukkan Chat ID Telegram: " INPUT_ID
+# Meminta input dari user
+clear
+read -p "Masukkan Nama perangkat  : " INPUT_NAMA
+read -p "Masukkan API BOT Telegram: " INPUT_TOKEN
+read -p "Masukkan Chat ID Telegram: " INPUT_ID
 
-# # 1. Membuat file config.sh berdasarkan input
-# #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# cat << EOF > config.sh && chmod +x config.sh
-# #!/bin/bash
-# NAMA="$INPUT_NAMA"
-# TOKEN="$INPUT_TOKEN"
-# CHAT_ID="$INPUT_ID"
-# EOF
-# #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-# 2. Membuat file code.sh (Versi Speedtest)
+# 1. Membuat file config.sh berdasarkan input
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+cat << EOF > config.sh && chmod +x config.sh
+#!/bin/bash
+NAMA="$INPUT_NAMA"
+TOKEN="$INPUT_TOKEN"
+CHAT_ID="$INPUT_ID"
+EOF
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+2. Membuat file code.sh (Versi Speedtest)
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 cat << 'EOF' > code.sh && chmod +x code.sh
 #!/bin/bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

@@ -47,22 +47,29 @@ cat << 'EOC' > main.py && chmod +x main.py
 import subprocess
 import os
 import asyncio
+import sys
+import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 
-# Fungsi untuk mendapatkan path absolut folder tempat main.py berada
+# 1. LOGGING: Agar kita bisa cek error di bot.log jika bot macet
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+
+# 2. LOCK PATH: Mengunci lokasi bot
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+os.chdir(BASE_DIR)
 
 def load_config():
     config = {}
     config_file = os.path.join(BASE_DIR, "0.sh")
     if not os.path.exists(config_file):
-        print(f"ERROR: File konfigurasi tidak ditemukan di: {config_file}")
         return None
     with open(config_file, "r") as f:
         for line in f:
             if '=' in line and not line.startswith('#'):
-                # Membersihkan tanda kutip dan spasi
                 key, value = line.replace('"', '').replace("'", "").split('=', 1)
                 config[key.strip()] = value.strip()
     return config
@@ -73,39 +80,37 @@ async def run_script(update: Update, script_name: str):
     chat_id_user = str(update.effective_chat.id)
     chat_id_config = conf.get("CHAT_ID")
     
-    # Validasi Chat ID agar aman
     if chat_id_user == chat_id_config:
-        # MENGGUNAKAN PATH ABSOLUT agar file .sh pasti ditemukan
         script_path = os.path.join(BASE_DIR, script_name)
         
         if not os.path.exists(script_path):
-            await update.message.reply_text(f"❌ Error: File tidak ditemukan di:\n`{script_path}`", parse_mode="Markdown")
+            await update.message.reply_text(f"❌ File tidak ditemukan:\n`{script_path}`", parse_mode="Markdown")
             return
 
         status_msg = await update.message.reply_text(f"⏳ Menjalankan {script_name}...")
         
         try:
-            # Eksekusi dengan path absolut
+            # Gunakan subprocess dengan timeout agar bot tidak hang jika skrip macet
             process = await asyncio.create_subprocess_exec(
                 "/bin/bash", script_path,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
-            stdout, stderr = await process.communicate()
-            
-            # Jika ingin melihat error dari file .sh di log terminal:
-            if stderr:
-                print(f"Error saat menjalankan {script_name}: {stderr.decode()}")
-
+            # Beri batas waktu 2 menit per skrip
+            await asyncio.wait_for(process.communicate(), timeout=120)
+        except asyncio.TimeoutError:
+            await update.message.reply_text("⚠️ Skrip terlalu lama berjalan (Timeout).")
         except Exception as e:
-            await update.message.reply_text(f"❌ Terjadi kesalahan teknis: {str(e)}")
-        
+            await update.message.reply_text(f"❌ Error: {str(e)}")
+            
         await asyncio.sleep(1) 
-        await status_msg.delete()
+        try:
+            await status_msg.delete()
+        except:
+            pass
     else:
-        await update.message.reply_text(f"❌ Akses ditolak. ID Anda ({chat_id_user}) tidak terdaftar.")
+        await update.message.reply_text(f"❌ Akses ditolak.")
 
-# Handler perintah
 async def cmd_1(u, c): await run_script(u, "1.sh")
 async def cmd_2(u, c): await run_script(u, "2.sh")
 async def cmd_3(u, c): await run_script(u, "3.sh")
@@ -115,22 +120,18 @@ async def cmd_5(u, c): await run_script(u, "5.sh")
 if __name__ == '__main__':
     if conf:
         TOKEN = conf.get("TOKEN")
-        if not TOKEN:
-            print("ERROR: TOKEN tidak ditemukan di 0.sh")
-        else:
-            app = ApplicationBuilder().token(TOKEN).build()
-            
-            app.add_handler(CommandHandler("1", cmd_1))
-            app.add_handler(CommandHandler("2", cmd_2))
-            app.add_handler(CommandHandler("3", cmd_3))
-            app.add_handler(CommandHandler("4", cmd_4))
-            app.add_handler(CommandHandler("5", cmd_5))
-            
-            print(f"Bot standby di folder: {BASE_DIR}")
-            print("Perintah aktif: /1, /2, /3, /4, /5")
-            app.run_polling()
-    else:
-        print("Bot gagal dijalankan karena konfigurasi (0.sh) bermasalah.")
+        # Menambahkan fitur 'get_updates_read_timeout' agar bot lebih tahan gangguan sinyal
+        app = ApplicationBuilder().token(TOKEN).read_timeout(30).write_timeout(30).build()
+        
+        app.add_handler(CommandHandler("1", cmd_1))
+        app.add_handler(CommandHandler("2", cmd_2))
+        app.add_handler(CommandHandler("3", cmd_3))
+        app.add_handler(CommandHandler("4", cmd_4))
+        app.add_handler(CommandHandler("5", cmd_5))
+        
+        print(f"Bot Aktif di: {BASE_DIR}")
+        # Jalankan dengan pola polling yang lebih stabil
+        app.run_polling(drop_pending_updates=True)
 EOC
 
 # 4. Membuat file restart.sh untuk restart bot
@@ -164,6 +165,12 @@ echo "Log dapat dilihat di: tail -f bot.log"
 echo "------------------------------------------------"
 EOF
 
+sleep 5
+./restart.sh
+sleep 2
+./5.sh
+clear
+
 # 5. Mengatur Crontab agar bot jalan otomatis
 (crontab -l 2>/dev/null | grep -v "$P_DIR/main.py"; \
  echo "@reboot cd $P_DIR && $P_DIR/venv/bin/python3 main.py > $P_DIR/bot.log 2>&1 &") | crontab -
@@ -177,9 +184,6 @@ echo "2. Jalankan bot sekarang: ./venv/bin/python3 main.py"
 echo "3. Di Telegram, ketik /1 untuk eksekusi 1.sh, dst."
 echo "------------------------------------------------"
 
-sleep 5
-./restart.sh
-sleep 2
-./5.sh
+
 
 rm -- "$0"

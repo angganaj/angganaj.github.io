@@ -9,7 +9,7 @@ read -p "Masukkan Chat ID Telegram: " INPUT_ID
 
 # 1. Membuat file config.sh berdasarkan input
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-cat << EOF > config.sh
+cat << EOF > config.sh && chmod +x config.sh
 #!/bin/bash
 NAMA="$INPUT_NAMA"
 TOKEN="$INPUT_TOKEN"
@@ -17,9 +17,9 @@ CHAT_ID="$INPUT_ID"
 EOF
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-# 2. Membuat file reboot.sh
+# 2. Membuat file reboot.sh (Versi Speedtest)
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-cat << 'EOF' > reboot.sh
+cat << 'EOF' > reboot.sh && chmod +x reboot.sh
 #!/bin/bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ -f "$DIR/config.sh" ]; then source "$DIR/config.sh"; else exit 1; fi
@@ -31,14 +31,27 @@ while ! ping -c 1 8.8.8.8 > /dev/null 2>&1; do sleep 5; done
 WAKTU=$(date '+%d-%m-%Y %H:%M:%S')
 HOSTNAME=$(hostname)
 SUHU=$(vcgencmd measure_temp | sed "s/temp=//" | sed "s/'/°/")
-IP_LAN=$(ip addr show eth0 2>/dev/null | grep "inet " | head -n 1 | awk '{print $2}' | cut -d/ -f1)
-IP_WIFI=$(ip addr show wlan0 2>/dev/null | grep "inet " | head -n 1 | awk '{print $2}' | cut -d/ -f1)
 UPTIME=$(uptime -p | sed 's/up //')
 DISK_INFO=$(df -h / | awk 'NR==2 {print $3 " / " $2 " (" $5 ")"}' )
 
-# Buat Link Hyperlink untuk IP
-[ -n "$IP_LAN" ] && LINK_LAN="[$IP_LAN](http://$IP_LAN)" || LINK_LAN="Tidak Terhubung"
-[ -n "$IP_WIFI" ] && LINK_WIFI="[$IP_WIFI](http://$IP_WIFI)" || LINK_WIFI="Tidak Terhubung"
+# --- PROSES SPEEDTEST ---
+# Menjalankan speedtest secara ringkas
+echo "Sedang menjalankan Speedtest..."
+ST_RESULT=$(speedtest-cli --simple)
+ST_DOWNLOAD=$(echo "$ST_RESULT" | grep "Download" | awk '{print $2 " " $3}')
+ST_UPLOAD=$(echo "$ST_RESULT" | grep "Upload" | awk '{print $2 " " $3}')
+ST_PING=$(echo "$ST_RESULT" | grep "Ping" | awk '{print $2 " " $3}')
+
+# --- PERBAIKAN BARIS IP (MULTI-IP) ---
+IPS=$(hostname -I)
+IP_LIST=""
+if [ -z "$IPS" ]; then
+    IP_LIST="Tidak Terhubung"
+else
+    for IP in $IPS; do
+        IP_LIST+="- [$IP](http://$IP) "
+    done
+fi
 
 PESAN="🚀 *$NAMA Online!*
 ━━━━━━━━━━━━━━━
@@ -49,8 +62,12 @@ PESAN="🚀 *$NAMA Online!*
 💾 *Disk Used:* \`$DISK_INFO\`
 
 🌐 *Koneksi IP:*
-• LAN: $LINK_LAN
-• WiFi: $LINK_WIFI
+$IP_LIST
+
+🚀 *Internet Speed:*
+• Ping: \`$ST_PING\`
+• Download: \`$ST_DOWNLOAD\`
+• Upload: \`$ST_UPLOAD\`
 ━━━━━━━━━━━━━━━"
 
 curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
@@ -64,12 +81,15 @@ EOF
 # 3. Menyiapkan VENV dan Python Bot
 echo "--- Menyiapkan Python Bot (venv) ---"
 # Pastikan paket venv terinstall di sistem
+sudo apt-get update && sudo apt-get install -y speedtest-cli
 sudo apt-get update && sudo apt-get install -y python3-venv
 python3 -m venv venv
 ./venv/bin/pip install python-telegram-bot
+
+
 # 4. Membuat file main.py (Versi Lengkap dengan Log & Path Absolut)
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-cat << 'EOF' > main.py
+cat << 'EOF' > main.py && chmod +x main.py
 import subprocess
 import os
 import sys
@@ -122,9 +142,10 @@ if __name__ == '__main__':
         app.run_polling()
 EOF
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# 5. Izin eksekusi
-chmod +x config.sh reboot.sh main.py
 
+
+
+# 5. Izin eksekusi
 # Info folder untuk memudahkan testing
 P_DIR=$(pwd)
 
@@ -156,9 +177,10 @@ echo "1. Bot jalan otomatis saat Startup."
 echo "2. Bot akan RESTART & KIRIM LAPORAN setiap 6 jam."
 echo "------------------------------------------------"
 
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 # 6. Membuat file restart.sh
-cat << 'EOF' > restart.sh
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+cat << 'EOF' > restart.sh && chmod +x restart.sh
 #!/bin/bash
 P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -174,9 +196,8 @@ echo "Bot telah direstart!"
 # Mengirim laporan status ke Telegram
 /bin/bash "$P_DIR/reboot.sh"
 EOF
-
-chmod +x restart.sh
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 # Jalankan notifikasi pertama sebagai tes
 ./reboot.sh
 

@@ -2,7 +2,7 @@
 
 # Memanggil file konfigurasi
 # Gunakan path absolut jika dijalankan via Crontab, contoh: source /home/pi/config.sh
-source ./0config.sh
+source ./4.sh
 
 PESAN="$DEVICE_NAME file 4"
 

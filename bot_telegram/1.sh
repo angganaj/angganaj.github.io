@@ -2,7 +2,7 @@
 
 # Memanggil file konfigurasi
 # Gunakan path absolut jika dijalankan via Crontab, contoh: source /home/pi/config.sh
-source ./0config.sh
+source ./1.sh
 
 # 1. Mengambil Data Sistem
 WAKTU=$(date +"%d-%m-%Y %H:%M:%S")

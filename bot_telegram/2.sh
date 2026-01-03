@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Memanggil file konfigurasi (Token, Chat ID, dan Device Name)
-source ./2.sh
+source ./0.sh
 
     # Menyusun Pesan
     PESAN="🚀** **🚀"

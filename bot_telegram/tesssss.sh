@@ -154,6 +154,3 @@ echo "1. Pastikan file 1.sh sampai 5.sh ada di folder ini."
 echo "2. Jalankan bot sekarang: ./venv/bin/python3 main.py"
 echo "3. Di Telegram, ketik /1 untuk eksekusi 1.sh, dst."
 echo "------------------------------------------------"
-
-
-

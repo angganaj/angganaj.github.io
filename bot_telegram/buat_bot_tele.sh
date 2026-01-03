@@ -1,21 +1,21 @@
 #!/bin/bash
 
 echo "=== Setup Notifikasi & Bot Raspberry Pi ==="
-# Meminta input dari user
-clear
-read -p "Masukkan Nama perangkat  : " INPUT_NAMA
-read -p "Masukkan API BOT Telegram: " INPUT_TOKEN
-read -p "Masukkan Chat ID Telegram: " INPUT_ID
+# # Meminta input dari user
+# clear
+# read -p "Masukkan Nama perangkat  : " INPUT_NAMA
+# read -p "Masukkan API BOT Telegram: " INPUT_TOKEN
+# read -p "Masukkan Chat ID Telegram: " INPUT_ID
 
-# 1. Membuat file config.sh berdasarkan input
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-cat << EOF > config.sh && chmod +x config.sh
-#!/bin/bash
-NAMA="$INPUT_NAMA"
-TOKEN="$INPUT_TOKEN"
-CHAT_ID="$INPUT_ID"
-EOF
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# # 1. Membuat file config.sh berdasarkan input
+# #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# cat << EOF > config.sh && chmod +x config.sh
+# #!/bin/bash
+# NAMA="$INPUT_NAMA"
+# TOKEN="$INPUT_TOKEN"
+# CHAT_ID="$INPUT_ID"
+# EOF
+# #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # 2. Membuat file code.sh (Versi Speedtest)
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -54,21 +54,21 @@ else
 fi
 
 PESAN="🚀 *$NAMA Online!*
-===============
+==============================
 📅 *Waktu:* \`$WAKTU\`
 🏠 *Hostname:* \`$HOSTNAME\`
 🌡️ *Suhu CPU:* \`$SUHU\`
 ⏱️ *Uptime:* \`$UPTIME\`
 💾 *Disk Used:* \`$DISK_INFO\`
-===============
+==============================
 🌐 *Koneksi IP:*
 $IP_LIST
-===============
+==============================
 🚀 *Internet Speed:*
 • Ping: \`$ST_PING\`
 • Download: \`$ST_DOWNLOAD\`
 • Upload: \`$ST_UPLOAD\`
-==============="
+=============================="
 
 curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
      -d "chat_id=${CHAT_ID}" \

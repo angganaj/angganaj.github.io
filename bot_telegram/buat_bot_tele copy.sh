@@ -17,9 +17,9 @@ CHAT_ID="$INPUT_ID"
 EOF
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-# 2. Membuat file code.sh (Versi Speedtest)
+# 2. Membuat file reboot.sh (Versi Speedtest)
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-cat << 'EOF' > code.sh && chmod +x code.sh
+cat << 'EOF' > reboot.sh && chmod +x reboot.sh
 #!/bin/bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ -f "$DIR/config.sh" ]; then source "$DIR/config.sh"; else exit 1; fi
@@ -122,9 +122,9 @@ async def handle_cek(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if chat_id_user == chat_id_config:
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        script_path = os.path.join(dir_path, "code.sh")
+        script_path = os.path.join(dir_path, "reboot.sh")
         
-        print("Menjalankan code.sh...")
+        print("Menjalankan reboot.sh...")
         subprocess.run(["/bin/bash", script_path])
     else:
         print(f"Akses ditolak untuk ID: {chat_id_user}")
@@ -157,7 +157,7 @@ echo "1. Jalankan bot: ./venv/bin/python3 main.py"
 echo "2. Ketik /cek di Telegram Anda."
 echo "------------------------------------------------"
 echo "Tambahkan ini ke 'crontab -e' agar otomatis:"
-echo "@reboot /bin/bash $P_DIR/code.sh"
+echo "@reboot /bin/bash $P_DIR/reboot.sh"
 echo "@reboot cd $P_DIR && $P_DIR/venv/bin/python3 main.py"
 echo "------------------------------------------------"
 
@@ -165,9 +165,9 @@ echo "------------------------------------------------"
 P_DIR=$(pwd)
 
 # Menghapus entri lama agar tidak duplikat, lalu menambah entri baru
-# Perhatikan: Sekarang 0 */6 menjalankan restart.sh, bukan code.sh langsung
-(crontab -l 2>/dev/null | grep -v "$P_DIR/main.py" | grep -v "$P_DIR/code.sh" | grep -v "$P_DIR/restart.sh"; \
- echo "@reboot /bin/bash $P_DIR/code.sh"; \
+# Perhatikan: Sekarang 0 */6 menjalankan restart.sh, bukan reboot.sh langsung
+(crontab -l 2>/dev/null | grep -v "$P_DIR/main.py" | grep -v "$P_DIR/reboot.sh" | grep -v "$P_DIR/restart.sh"; \
+ echo "@reboot /bin/bash $P_DIR/reboot.sh"; \
  echo "0 */6 * * * /bin/bash $P_DIR/restart.sh"; \
  echo "@reboot cd $P_DIR && $P_DIR/venv/bin/python3 main.py > $P_DIR/bot.log 2>&1 &") | crontab -
 
@@ -194,12 +194,12 @@ nohup $P_DIR/venv/bin/python3 $P_DIR/main.py > $P_DIR/bot.log 2>&1 &
 echo "Bot telah direstart!"
 
 # Mengirim laporan status ke Telegram
-/bin/bash "$P_DIR/code.sh"
+/bin/bash "$P_DIR/reboot.sh"
 EOF
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # Jalankan notifikasi pertama sebagai tes
-./code.sh
+./reboot.sh
 
 echo "--- Menjalankan Bot di Latar Belakang ---"
 # Menjalankan bot tanpa mengunci terminal

@@ -54,21 +54,21 @@ else
 fi
 
 PESAN="🚀 *$NAMA Online!*
-━━━━━━━━━━━━━━━
+===============
 📅 *Waktu:* \`$WAKTU\`
 🏠 *Hostname:* \`$HOSTNAME\`
 🌡️ *Suhu CPU:* \`$SUHU\`
 ⏱️ *Uptime:* \`$UPTIME\`
 💾 *Disk Used:* \`$DISK_INFO\`
-
+===============
 🌐 *Koneksi IP:*
 $IP_LIST
-
+===============
 🚀 *Internet Speed:*
 • Ping: \`$ST_PING\`
 • Download: \`$ST_DOWNLOAD\`
 • Upload: \`$ST_UPLOAD\`
-━━━━━━━━━━━━━━━"
+==============="
 
 curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
      -d "chat_id=${CHAT_ID}" \
@@ -87,12 +87,13 @@ python3 -m venv venv
 ./venv/bin/pip install python-telegram-bot
 
 
-# 4. Membuat file main.py (Versi Lengkap dengan Log & Path Absolut)
+
+# 4. Membuat file main.py (Versi Perbaikan)
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 cat << 'EOF' > main.py && chmod +x main.py
 import subprocess
 import os
-import sys
+import asyncio
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 
@@ -100,11 +101,8 @@ def load_config():
     config = {}
     dir_path = os.path.dirname(os.path.realpath(__file__))
     config_file = os.path.join(dir_path, "config.sh")
-    
     if not os.path.exists(config_file):
-        print(f"Error: {config_file} tidak ditemukan!")
         return None
-        
     with open(config_file, "r") as f:
         for line in f:
             if '=' in line and not line.startswith('#'):
@@ -118,27 +116,36 @@ async def handle_cek(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id_user = str(update.effective_chat.id)
     chat_id_config = conf.get("CHAT_ID")
     
-    print(f"Menerima perintah dari ID: {chat_id_user}")
-    
     if chat_id_user == chat_id_config:
+        # Beri respon awal agar user tahu bot sedang bekerja
+        status_msg = await update.message.reply_text("⏳ Sedang mengecek sistem & Speedtest... Mohon tunggu.")
+        
         dir_path = os.path.dirname(os.path.realpath(__file__))
         script_path = os.path.join(dir_path, "code.sh")
         
-        print("Menjalankan code.sh...")
-        subprocess.run(["/bin/bash", script_path])
+        # Menjalankan script secara async agar bot tidak hang
+        process = await asyncio.create_subprocess_exec(
+            "/bin/bash", script_path,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        await process.wait()
+        
+        # Hapus pesan "Mohon tunggu" setelah selesai
+        await context.bot.delete_message(chat_id=chat_id_user, message_id=status_msg.message_id)
     else:
-        print(f"Akses ditolak untuk ID: {chat_id_user}")
-        await update.message.reply_text("❌ ID Anda tidak terdaftar.")
+        await update.message.reply_text(f"❌ Akses ditolak. ID Anda ({chat_id_user}) tidak terdaftar.")
 
 if __name__ == '__main__':
     if conf:
         TOKEN = conf.get("TOKEN")
         app = ApplicationBuilder().token(TOKEN).build()
         
+        # Mendukung Command /cek dan Text "cek"
         app.add_handler(CommandHandler("cek", handle_cek))
-        app.add_handler(MessageHandler(filters.Text(["cek", "Cek", "CEK"]), handle_cek))
+        app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_cek))
         
-        print("Bot standby... Tekan Ctrl+C untuk berhenti.")
+        print("Bot standby...")
         app.run_polling()
 EOF
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

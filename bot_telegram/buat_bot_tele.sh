@@ -53,7 +53,7 @@ else
     done
 fi
 
-PESAN="🚀 *$NAMA Online!*
+PESAN="⚡⚡⚡ *$NAMA Online! ⚡⚡⚡*
 ==============================
 📅 *Waktu:* \`$WAKTU\`
 🏠 *Hostname:* \`$HOSTNAME\`
@@ -65,9 +65,9 @@ PESAN="🚀 *$NAMA Online!*
 $IP_LIST
 ==============================
 🚀 *Internet Speed:*
-• Ping: \`$ST_PING\`
-• Download: \`$ST_DOWNLOAD\`
-• Upload: \`$ST_UPLOAD\`
+🏓 Ping: \`$ST_PING\`
+⬇️ Download: \`$ST_DOWNLOAD\`
+⬆️ Upload: \`$ST_UPLOAD\`
 =============================="
 
 curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \

@@ -4,6 +4,8 @@
 source ./0.sh
 
 # 1. Mengambil Data Sistem
+OS_INFO=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d'"' -f2)
+IP_PUB=$(curl -s https://ifconfig.me)
 WAKTU=$(date +"%d-%m-%Y %H:%M:%S")
 SUHU=$(vcgencmd measure_temp | cut -d'=' -f2)
 UPTIME=$(uptime -p | sed 's/up //')
@@ -30,6 +32,7 @@ fi
 # 4. Menyusun Pesan Markdown
 PESAN="⚡️⚡️⚡️ *SYSTEM - $DEVICE_NAME* ⚡️⚡️⚡️
 ===========================
+🖥️ *OS* : \`$OS_INFO\`
 📅 *Waktu* : \`$WAKTU\`
 📈 *CPU Load* : \`$CPU_LOAD%\`
 🌡️ *Suhu CPU* : \`$SUHU\`
@@ -37,9 +40,10 @@ PESAN="⚡️⚡️⚡️ *SYSTEM - $DEVICE_NAME* ⚡️⚡️⚡️
 💾 *RAM Usage* : \`$RAM\`
 💽 *Disk* : \`$DISK_INFO\`
 ===========================
-🌐 *KONEKSI JARINGAN*
+📡 *KONEKSI JARINGAN*
 🔌 *LAN (eth0)* : $LINK_LAN
 📶 *WiFi (wlan)* : $LINK_WIFI
+🌐 *IP PUB* : $IP_PUB
 ===========================
 🤖 *Status*: System Normal ✅"
 
@@ -49,5 +53,3 @@ curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
     -d text="$PESAN" \
     -d parse_mode="Markdown" \
     -d disable_web_page_preview="true" > /dev/null
-
-echo "Laporan dikirim ke ID: $CHAT_ID"

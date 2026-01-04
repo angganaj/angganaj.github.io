@@ -62,12 +62,13 @@ async def run_script(update: Update, script_name: str):
     else:
         await update.message.reply_text(f"❌ Akses ditolak.")
 
-async def cmd_1(u, c): await run_script(u, "1.sh")
-async def cmd_2(u, c): await run_script(u, "2.sh")
-async def cmd_3(u, c): await run_script(u, "3.sh")
-async def cmd_4(u, c): await run_script(u, "4.sh")
-async def cmd_5(u, c): await run_script(u, "5.sh")
+async def cmd_1(u, c): await run_script(u, "1_.sh")
+async def cmd_2(u, c): await run_script(u, "2_.sh")
+async def cmd_3(u, c): await run_script(u, "3_.sh")
+async def cmd_4(u, c): await run_script(u, "4_.sh")
+async def cmd_5(u, c): await run_script(u, "5_.sh")
 async def cmd_6(u, c): await run_script(u, "6_restart_bot.sh")
+async def cmd_7(u, c): await run_script(u, "7_reboot.sh")
 
 if __name__ == '__main__':
     if conf:
@@ -81,6 +82,7 @@ if __name__ == '__main__':
         app.add_handler(CommandHandler("4", cmd_4))
         app.add_handler(CommandHandler("5", cmd_5))
         app.add_handler(CommandHandler("6", cmd_6))
+        app.add_handler(CommandHandler("7", cmd_7))
         
         print(f"Bot Aktif. Menggunakan folder: {BASE_DIR}")
         # drop_pending_updates agar bot tidak mengerjakan perintah usang saat baru nyala

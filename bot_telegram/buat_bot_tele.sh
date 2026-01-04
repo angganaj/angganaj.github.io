@@ -49,12 +49,42 @@ wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.gith
 
 # crontab - crontab - crontab - crontab - crontab - crontab - crontab - crontab
 (crontab -l 2>/dev/null | grep -v "$P_DIR/main.py"; \
- echo "@reboot cd $P_DIR && $P_DIR/venv/bin/python3 main.py > $P_DIR/bot.log 2>&1 &") | crontab -
-(crontab -l 2>/dev/null | grep -v "$P_DIR/main.py"; \
- echo "@reboot $P_DIR/7_reboot.sh") | crontab -
- 
+ echo "@reboot $P_DIR/7_reboot.sh"
+ echo "@reboot cd $P_DIR && $P_DIR/venv/bin/python3 main.py > $P_DIR/bot.log 2>&1 &"
+ ) | crontab -
+
+
+# Memanggil file konfigurasi
+source ./0.sh
+
+# Mengambil data tambahan untuk laporan instalasi
+OS_INFO=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d'"' -f2)
+WAKTU=$(date +"%d %b %Y, %H:%M:%S")
+IP_PUB=$(curl -s https://ifconfig.me)
+
+# Menyusun Pesan Sukses
+PESAN="✅ *INSTALLATION SUCCESSFUL* ✅
+━━━━━━━━━━━━━━━━━━━━━━
+🤖 *Bot Name* : \`$DEVICE_NAME\`
+⚙️ *Status* : \`ACTIVE / ONLINE\`
+📅 *Tanggal* : \`$WAKTU\`
+━━━━━━━━━━━━━━━━━━━━━━
+💻 *System Info*:
+OS   : \`$OS_INFO\`
+IP   : \`$IP_PUB\`
+━━━━━━━━━━━━━━━━━━━━━━
+🚀 _Bot telah berhasil terinstal._"
+
+# Mengirim ke Telegram
+curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
+    -d chat_id="$CHAT_ID" \
+    -d text="$PESAN" \
+    -d parse_mode="Markdown" > /dev/null
+
+
 echo "------------------------------------------------"
 echo "SETUP SELESAI!"
+echo "Notifikasi instalasi berhasil telah dikirim!"
 echo "------------------------------------------------"
 
 

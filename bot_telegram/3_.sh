@@ -10,5 +10,3 @@ PESAN="$DEVICE_NAME file 3"
 curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
     -d chat_id="$CHAT_ID" \
     -d text="$PESAN" > /dev/null
-
-echo "Laporan $DEVICE_NAME telah dikirim!"

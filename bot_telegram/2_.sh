@@ -19,6 +19,7 @@ else
     DOWNLOAD=$(echo "$FULL_OUTPUT" | grep "Download:" | awk '{print $2, $3}')
     UPLOAD=$(echo "$FULL_OUTPUT" | grep "Upload:" | awk '{print $2, $3}')
     WAKTU=$(date +"%d %b %Y, %H:%M")
+    IP_PUB=$(curl -s https://ifconfig.me)
 
     # Menyusun Pesan dengan Format Markdown
     # ```text ... ``` digunakan agar angka terlihat seperti kode (monospace)
@@ -27,6 +28,7 @@ else
 📅 *$WAKTU*
 💻 Host: *$DEVICE_NAME*
 🌐 ISP: *$ISP*
+🌐 IP PUB: *$IP_PUB*
 =========================
 📊 *Statistics:*
 \`Ping      : $PING\`

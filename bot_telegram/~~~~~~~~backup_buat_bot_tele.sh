@@ -1,10 +1,11 @@
 #!/bin/bash
 
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/1.sh && chmod +x 1.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/2.sh && chmod +x 2.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/3.sh && chmod +x 3.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/4.sh && chmod +x 4.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/5.sh && chmod +x 5.sh
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/1_.sh && chmod +x 1_.sh
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/2_.sh && chmod +x 2_.sh
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/3_.sh && chmod +x 3_.sh
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/4_.sh && chmod +x 4_.sh
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/5_.sh && chmod +x 5_.sh
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/6_restart_bot.sh && chmod +x 6_restart_bot.sh
 # Mendapatkan lokasi direktori saat ini
 P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

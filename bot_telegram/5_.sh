@@ -10,6 +10,8 @@ PESAN="$DEVICE_NAME file 5
 /3
 /4
 /5
+/6
+/7
 "
 
 # 4. Mengirim ke Telegram

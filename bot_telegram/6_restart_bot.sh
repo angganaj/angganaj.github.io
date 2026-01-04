@@ -6,9 +6,14 @@ cd $P_DIR
 pkill -f "main.py"
 sleep 2
 
-# Pastikan izin file benar
-sudo chmod +x *.sh
-sudo chmod +x main.py
-
 # Jalankan bot dengan Path Absolut
 nohup $P_DIR/venv/bin/python3 $P_DIR/main.py > $P_DIR/bot.log 2>&1 &
+
+source ./0.sh
+
+PESAN="✅ Restarted Bot Successfully. ✅"
+
+# 4. Mengirim ke Telegram
+curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
+    -d chat_id="$CHAT_ID" \
+    -d text="$PESAN" > /dev/null

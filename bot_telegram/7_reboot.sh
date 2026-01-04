@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Memanggil file konfigurasi (Gunakan full path agar aman di crontab)
-source /home/pi/scripts/0.sh
+source ./0.sh
 
 # 1. FUNGSI CEK KONEKSI INTERNET
 echo "Menunggu koneksi internet..."
@@ -40,7 +40,7 @@ if [ "$IS_ONLINE" = true ]; then
 📡 *ISP* : \`$ISP\`
 ━━━━━━━━━━━━━━━━━━━━━━
 ✅ _Internet terdeteksi setelah $ATTEMPT kali percobaan._
-⚠️ _Sistem siap digunakan._"
+✅ _Sistem siap digunakan._"
 
     # Kirim ke Telegram
     curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \

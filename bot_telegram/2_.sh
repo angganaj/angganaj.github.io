@@ -3,17 +3,6 @@
 # Memanggil file konfigurasi
 source ./0.sh
 
-# 1. Kirim Notifikasi Awal (Status Sedang Berjalan)
-START_MSG="⏳ *SPEEDTEST STARTED*
-Sedang melakukan pengujian jaringan pada:
-💻 Device: \`$DEVICE_NAME\`
-Mohon tunggu sebentar..."
-
-curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
-    -d chat_id="$CHAT_ID" \
-    -d text="$START_MSG" \
-    -d parse_mode="Markdown" > /dev/null
-
 echo "Sedang menjalankan Speedtest..."
 
 # 2. Jalankan Speedtest (tanpa --simple agar bisa ambil info ISP, lalu kita filter manual)
@@ -37,7 +26,7 @@ else
 =========================
 📅 *$WAKTU*
 💻 Host: *$DEVICE_NAME*
-📡 ISP: *$ISP*
+🌐 ISP: *$ISP*
 =========================
 📊 *Statistics:*
 \`Ping      : $PING\`

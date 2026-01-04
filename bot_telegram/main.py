@@ -41,7 +41,8 @@ async def run_script(update: Update, script_name: str):
             await update.message.reply_text(f"❌ File tidak ditemukan di:\n`{script_path}`", parse_mode="Markdown")
             return
 
-        status_msg = await update.message.reply_text(f"⏳ Menjalankan {script_name}...")
+        # status_msg = await update.message.reply_text(f"⏳ Menjalankan {script_name}...")
+        status_msg = await update.message.reply_text(f"⏳ Wait...")
         
         try:
             process = await asyncio.create_subprocess_exec(
@@ -66,7 +67,7 @@ async def cmd_2(u, c): await run_script(u, "2.sh")
 async def cmd_3(u, c): await run_script(u, "3.sh")
 async def cmd_4(u, c): await run_script(u, "4.sh")
 async def cmd_5(u, c): await run_script(u, "5.sh")
-async def cmd_6(u, c): await run_script(u, "reboot_report.sh")
+async def cmd_6(u, c): await run_script(u, "6_restart_bot.sh")
 
 if __name__ == '__main__':
     if conf:
@@ -79,7 +80,7 @@ if __name__ == '__main__':
         app.add_handler(CommandHandler("3", cmd_3))
         app.add_handler(CommandHandler("4", cmd_4))
         app.add_handler(CommandHandler("5", cmd_5))
-        app.add_handler(CommandHandler("6", cmd_6))  # Command /6 untuk reboot_report.sh
+        app.add_handler(CommandHandler("6", cmd_6))
         
         print(f"Bot Aktif. Menggunakan folder: {BASE_DIR}")
         # drop_pending_updates agar bot tidak mengerjakan perintah usang saat baru nyala

@@ -4,7 +4,13 @@
 # Gunakan path absolut jika dijalankan via Crontab, contoh: source /home/pi/config.sh
 source ./0.sh
 
-PESAN="$DEVICE_NAME file 5"
+PESAN="$DEVICE_NAME file 5
+/1
+/2
+/3
+/4
+/5
+"
 
 # 4. Mengirim ke Telegram
 curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \

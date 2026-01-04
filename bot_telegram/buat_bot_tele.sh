@@ -50,8 +50,9 @@ wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.gith
 # crontab - crontab - crontab - crontab - crontab - crontab - crontab - crontab
 (crontab -l 2>/dev/null | grep -v "$P_DIR/main.py"; \
  echo "@reboot cd $P_DIR && $P_DIR/venv/bin/python3 main.py > $P_DIR/bot.log 2>&1 &") | crontab -
+(crontab -l 2>/dev/null | grep -v "$P_DIR/main.py"; \
  echo "@reboot $P_DIR/7_reboot.sh") | crontab -
-
+ 
 echo "------------------------------------------------"
 echo "SETUP SELESAI!"
 echo "------------------------------------------------"

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/1.sh && chmod +x 1.sh
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/2.sh && chmod +x 2.sh
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/3.sh && chmod +x 3.sh
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/4.sh && chmod +x 4.sh
+wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/5.sh && chmod +x 5.sh
 # Mendapatkan lokasi direktori saat ini
 P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

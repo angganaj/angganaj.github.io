@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Memanggil file konfigurasi
-# Gunakan path absolut jika dijalankan via Crontab, contoh: source /home/pi/config.sh
 source ./0.sh
 
 # 1. Mengambil Data Sistem
@@ -9,26 +8,46 @@ WAKTU=$(date +"%d-%m-%Y %H:%M:%S")
 SUHU=$(vcgencmd measure_temp | cut -d'=' -f2)
 UPTIME=$(uptime -p | sed 's/up //')
 DISK_INFO=$(df -h / | awk 'NR==2 {print $3 " / " $2 " (" $5 ")"}')
+RAM=$(free -m | awk '/Mem:/ { print $3 "/" $2 "MB" }')
+CPU_LOAD=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4}')
 
-# 2. Mengambil IP Address
-IP_LIST=$(hostname -I | awk '{for(i=1;i<=NF;i++) printf "- %s (http://%s) ", $i, $i}')
+# 2. Mengambil IP LAN (eth0) & Membuat Link
+IP_LAN=$(ip -4 addr show eth0 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+if [ -n "$IP_LAN" ]; then
+    LINK_LAN="[http://$IP_LAN](http://$IP_LAN)"
+else
+    LINK_LAN="*Disconnected*"
+fi
 
-# 3. Menyusun Pesan (Menggunakan $DEVICE_NAME dari config)
-PESAN="$DEVICE_NAME
-==================
-📅 Waktu	: $WAKTU
-🏠 Device	: $DEVICE_NAME
-🌡️ Suhu CPU	: $SUHU
-⏱️ Uptime	: $UPTIME
-💾 Disk Used	: $DISK_INFO
-==============================
-🌐 Koneksi IP:
-$IP_LIST
-=============================="
+# 3. Mengambil IP WIFI (wlan0) & Membuat Link
+IP_WIFI=$(ip -4 addr show wlan0 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+if [ -n "$IP_WIFI" ]; then
+    LINK_WIFI="[http://$IP_WIFI](http://$IP_WIFI)"
+else
+    LINK_WIFI="*Disconnected*"
+fi
 
-# 4. Mengirim ke Telegram
+# 4. Menyusun Pesan Markdown
+PESAN="⚡️⚡️⚡️ *SYSTEM - $DEVICE_NAME* ⚡️⚡️⚡️
+===========================
+📅 *Waktu* : \`$WAKTU\`
+📈 *CPU Load* : \`$CPU_LOAD%\`
+🌡️ *Suhu CPU* : \`$SUHU\`
+⏱️ *Uptime* : \`$UPTIME\`
+💾 *RAM Usage* : \`$RAM\`
+💽 *Disk* : \`$DISK_INFO\`
+===========================
+🌐 *KONEKSI JARINGAN*
+🔌 *LAN (eth0)* : $LINK_LAN
+📶 *WiFi (wlan)* : $LINK_WIFI
+===========================
+🤖 *Status*: System Normal ✅"
+
+# 5. Mengirim ke Telegram (Gunakan variabel $CHAT_ID sesuai 0.sh)
 curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
     -d chat_id="$CHAT_ID" \
-    -d text="$PESAN" > /dev/null
+    -d text="$PESAN" \
+    -d parse_mode="Markdown" \
+    -d disable_web_page_preview="true" > /dev/null
 
-echo "Laporan $DEVICE_NAME telah dikirim!"
+echo "Laporan dikirim ke ID: $CHAT_ID"

@@ -1,47 +1,55 @@
 #!/bin/bash
 
-# Memanggil file konfigurasi (Token, Chat ID, dan Device Name)
+# Memanggil file konfigurasi
 source ./0.sh
 
-    # Menyusun Pesan
-    PESAN="🚀** **🚀"
+# 1. Kirim Notifikasi Awal (Status Sedang Berjalan)
+START_MSG="⏳ *SPEEDTEST STARTED*
+Sedang melakukan pengujian jaringan pada:
+💻 Device: \`$DEVICE_NAME\`
+Mohon tunggu sebentar..."
 
-# Mengirim ke Telegram
 curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
     -d chat_id="$CHAT_ID" \
-    -d text="$PESAN" \
+    -d text="$START_MSG" \
     -d parse_mode="Markdown" > /dev/null
-echo "Sedang menjalankan Speedtest, mohon tunggu..."
 
-# Menjalankan speedtest-cli dan menangkap outputnya
-# Menggunakan --simple agar formatnya mudah dibaca (Ping, Download, Upload)
-ST_RESULTS=$(speedtest-cli --simple)
+echo "Sedang menjalankan Speedtest..."
 
-if [ -z "$ST_RESULTS" ]; then
-    PESAN="❌ Gagal mengambil data Speedtest pada $DEVICE_NAME"
+# 2. Jalankan Speedtest (tanpa --simple agar bisa ambil info ISP, lalu kita filter manual)
+# Kita simpan output lengkap ke variabel untuk di-parse
+FULL_OUTPUT=$(speedtest-cli)
+
+if [ -z "$FULL_OUTPUT" ]; then
+    PESAN="❌ *GAGAL*
+Tidak dapat terhubung ke server Speedtest."
 else
-    # Mengambil nilai masing-masing
-    PING=$(echo "$ST_RESULTS" | grep "Ping" | cut -d' ' -f2,3)
-    DOWNLOAD=$(echo "$ST_RESULTS" | grep "Download" | cut -d' ' -f2,3)
-    UPLOAD=$(echo "$ST_RESULTS" | grep "Upload" | cut -d' ' -f2,3)
-    WAKTU=$(date +"%d-%m-%Y %H:%M:%S")
+    # Parsing Data (Menggunakan grep & awk untuk fleksibilitas)
+    ISP=$(echo "$FULL_OUTPUT" | grep "Testing from" | sed 's/Testing from //g' | cut -d'(' -f1)
+    PING=$(echo "$FULL_OUTPUT" | grep "Hosted by" | awk -F': ' '{print $2}')
+    DOWNLOAD=$(echo "$FULL_OUTPUT" | grep "Download:" | awk '{print $2, $3}')
+    UPLOAD=$(echo "$FULL_OUTPUT" | grep "Upload:" | awk '{print $2, $3}')
+    WAKTU=$(date +"%d %b %Y, %H:%M")
 
-    # Menyusun Pesan
-    PESAN="🚀 **SPEEDTEST REPORT** 🚀
-==============================
-🏠 Device: $DEVICE_NAME
-📅 Waktu: $WAKTU
-==============================
-latency: $PING
-📥 Download: $DOWNLOAD
-📤 Upload: $UPLOAD
-=============================="
+    # Menyusun Pesan dengan Format Markdown
+    # ```text ... ``` digunakan agar angka terlihat seperti kode (monospace)
+    PESAN="🚀 *NETWORK REPORT* 🚀
+=========================
+📅 *$WAKTU*
+💻 Host: *$DEVICE_NAME*
+📡 ISP: *$ISP*
+=========================
+📊 *Statistics:*
+\`Ping      : $PING\`
+\`Download  : $DOWNLOAD\`
+\`Upload    : $UPLOAD\`
+========================="
 fi
 
-# Mengirim ke Telegram
+# 3. Kirim Hasil
 curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
     -d chat_id="$CHAT_ID" \
     -d text="$PESAN" \
     -d parse_mode="Markdown" > /dev/null
 
-echo "Hasil Speedtest telah dikirim ke Telegram!"
+echo "Selesai!"

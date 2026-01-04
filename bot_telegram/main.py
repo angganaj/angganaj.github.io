@@ -1,43 +1,3 @@
-#!/bin/bash
-
-# Mendapatkan lokasi direktori saat ini
-P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-clear
-echo "=== Setup Bot Eksekutor Laporan (1-5) ==="
-
-# Kondisi cek file 0.sh
-if [ -f "$P_DIR/0.sh" ]; then
-    echo "✔ File 0.sh ditemukan. Menggunakan konfigurasi yang ada..."
-    # Mengambil variabel untuk tampilan konfirmasi (opsional)
-    source "$P_DIR/0.sh"
-    echo "   Device Name: $DEVICE_NAME"
-else
-    echo "ℹ File 0.sh tidak ditemukan. Silakan masukkan data baru:"
-    read -p "Masukkan Nama perangkat  : " INPUT_NAMA
-    read -p "Masukkan API BOT Telegram: " INPUT_TOKEN
-    read -p "Masukkan Chat ID Telegram: " INPUT_ID
-
-    # 1. Membuat file 0.sh
-    cat << EOC > "$P_DIR/0.sh"
-#!/bin/bash
-# File Konfigurasi Telegram
-TOKEN="$INPUT_TOKEN"
-CHAT_ID="$INPUT_ID"
-DEVICE_NAME="$INPUT_NAMA"
-EOC
-    chmod +x "$P_DIR/0.sh"
-    echo "✔ File 0.sh berhasil dibuat."
-fi
-
-# 2. Menyiapkan Lingkungan Python
-echo "--- Menginstall Dependency & VENV ---"
-sudo apt-get update && sudo apt-get install -y speedtest-cli python3-venv
-python3 -m venv venv
-./venv/bin/pip install python-telegram-bot
-
-# 3. Membuat file main.py dengan perintah /1 sampai /5
-cat << 'EOC' > main.py && chmod +x main.py
 import subprocess
 import os
 import asyncio
@@ -106,6 +66,7 @@ async def cmd_2(u, c): await run_script(u, "2.sh")
 async def cmd_3(u, c): await run_script(u, "3.sh")
 async def cmd_4(u, c): await run_script(u, "4.sh")
 async def cmd_5(u, c): await run_script(u, "5.sh")
+async def cmd_6(u, c): await run_script(u, "reboot_report.sh")
 
 if __name__ == '__main__':
     if conf:
@@ -118,51 +79,8 @@ if __name__ == '__main__':
         app.add_handler(CommandHandler("3", cmd_3))
         app.add_handler(CommandHandler("4", cmd_4))
         app.add_handler(CommandHandler("5", cmd_5))
+        app.add_handler(CommandHandler("6", cmd_6))  # Command /6 untuk reboot_report.sh
         
         print(f"Bot Aktif. Menggunakan folder: {BASE_DIR}")
         # drop_pending_updates agar bot tidak mengerjakan perintah usang saat baru nyala
         app.run_polling(drop_pending_updates=True)
-EOC
-
-# 4. Membuat file restart.sh untuk restart bot
-cat << 'EOF' > restart.sh && chmod +x restart.sh
-#!/bin/bash
-P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd $P_DIR
-
-# Matikan bot lama
-pkill -f "main.py"
-sleep 2
-
-# Pastikan izin file benar
-chmod +x *.sh
-chmod +x main.py
-
-# Jalankan bot dengan Path Absolut
-nohup $P_DIR/venv/bin/python3 $P_DIR/main.py > $P_DIR/bot.log 2>&1 &
-
-echo "Bot telah direstart di folder $P_DIR"
-EOF
-
-sleep 5
-./restart.sh
-sleep 2
-./5.sh
-clear
-
-# 5. Mengatur Crontab agar bot jalan otomatis
-(crontab -l 2>/dev/null | grep -v "$P_DIR/main.py"; \
- echo "@reboot cd $P_DIR && $P_DIR/venv/bin/python3 main.py > $P_DIR/bot.log 2>&1 &") | crontab -
-
-echo "------------------------------------------------"
-echo "SETUP SELESAI!"
-echo "------------------------------------------------"
-echo "Cara Penggunaan:"
-echo "1. Pastikan file 1.sh sampai 5.sh ada di folder ini."
-echo "2. Jalankan bot sekarang: ./venv/bin/python3 main.py"
-echo "3. Di Telegram, ketik /1 untuk eksekusi 1.sh, dst."
-echo "------------------------------------------------"
-
-
-
-rm -- "$0"

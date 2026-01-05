@@ -17,6 +17,7 @@ else
     read -p "Masukkan Nama perangkat  : " INPUT_NAMA
     read -p "Masukkan API BOT Telegram: " INPUT_TOKEN
     read -p "Masukkan Chat ID Telegram: " INPUT_ID
+    read -p "Masukkan Chat ID Telegram: " GROUP_ID
 
     # 1. Membuat file 0.sh
     cat << EOC > "$P_DIR/0.sh"
@@ -24,6 +25,7 @@ else
 # File Konfigurasi Telegram
 TOKEN="$INPUT_TOKEN"
 CHAT_ID="$INPUT_ID"
+GROUP_ID="$GROUP_ID"
 DEVICE_NAME="$INPUT_NAMA"
 EOC
     chmod +x "$P_DIR/0.sh"
@@ -86,7 +88,6 @@ echo "------------------------------------------------"
 echo "SETUP SELESAI!"
 echo "Notifikasi instalasi berhasil telah dikirim!"
 echo "------------------------------------------------"
-
 
 
 rm -- "$0"

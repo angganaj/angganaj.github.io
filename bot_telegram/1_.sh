@@ -49,7 +49,6 @@ PESAN="⚡️⚡️⚡️ *SYSTEM - $DEVICE_NAME* ⚡️⚡️⚡️
 
 # 5. Mengirim ke Telegram (Gunakan variabel $CHAT_ID sesuai 0.sh)
 curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
-    -d chat_id="$CHAT_ID" \
+    -d chat_id="$GROUP_ID" \
     -d text="$PESAN" \
-    -d parse_mode="Markdown" \
-    -d disable_web_page_preview="true" > /dev/null
+    -d parse_mode="Markdown" > /dev/null

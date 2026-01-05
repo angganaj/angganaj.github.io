@@ -39,8 +39,6 @@ fi
 
 # 3. Kirim Hasil
 curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
-    -d chat_id="$CHAT_ID" \
+    -d chat_id="$GROUP_ID" \
     -d text="$PESAN" \
     -d parse_mode="Markdown" > /dev/null
-
-echo "Selesai!"

@@ -42,11 +42,11 @@ if [ "$IS_ONLINE" = true ]; then
 ✅ _Internet terdeteksi setelah $ATTEMPT kali percobaan._
 ✅ _Sistem siap digunakan._"
 
-    # Kirim ke Telegram
-    curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
-        -d chat_id="$CHAT_ID" \
-        -d text="$PESAN" \
-        -d parse_mode="Markdown" > /dev/null
+# 4. Mengirim ke Telegram
+curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
+    -d chat_id="$GROUP_ID" \
+    -d text="$PESAN" \
+    -d parse_mode="Markdown" > /dev/null
 else
     echo "Gagal mengirim notifikasi: Internet tidak tersedia setelah batas waktu."
 fi

@@ -39,22 +39,34 @@ python3 -m venv venv
 ./venv/bin/pip install python-telegram-bot
 
 clear
-# 3. Membuat file main.py dengan perintah /1 sampai /5
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/1_.sh && chmod +x 1_.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/2_.sh && chmod +x 2_.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/3_.sh && chmod +x 3_.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/4_.sh && chmod +x 4_.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/5_.sh && chmod +x 5_.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/6_restart_bot.sh && chmod +x 6_restart_bot.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/7_reboot.sh && chmod +x 7_reboot.sh
-wget -q --show-progress https://raw.githubusercontent.com/angganaj/angganaj.github.io/refs/heads/main/bot_telegram/main.py && chmod +x main.py
+# 3. Mengunduh File Bot dari Repository
+wget https://github.com/angganaj/angganaj.github.io/archive/refs/heads/main.zip -O repo.zip
+unzip -q repo.zip "angganaj.github.io-main/bot_telegram/*"
+mv angganaj.github.io-main/bot_telegram/* .
+rm -rf angganaj.github.io-main repo.zip
+
+clear
+
 
 # crontab - crontab - crontab - crontab - crontab - crontab - crontab - crontab
 (crontab -l 2>/dev/null | grep -v "$P_DIR/main.py"; \
- echo "@reboot $P_DIR/7_reboot.sh"
+ echo "@reboot $P_DIR/7_.sh"
  echo "@reboot cd $P_DIR && $P_DIR/venv/bin/python3 main.py > $P_DIR/bot.log 2>&1 &"
  ) | crontab -
 
+clear
+
+echo "------------------------------------------------"
+echo "SETUP SELESAI!"
+echo "Notifikasi instalasi berhasil telah dikirim!"
+echo "------------------------------------------------"
+
+chmod +x *.sh
+chmod +x *.py
+
+sleep 5
+./6_restart_bot.sh
+sleep 2
 
 # Memanggil file konfigurasi
 source ./0.sh
@@ -79,17 +91,8 @@ IP   : \`$IP_PUB\`
 
 # Mengirim ke Telegram
 curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
-    -d chat_id="$CHAT_ID" \
+    -d chat_id="$GROUP_ID" \
     -d text="$PESAN" \
     -d parse_mode="Markdown" > /dev/null
-
-
-echo "------------------------------------------------"
-echo "SETUP SELESAI!"
-echo "Notifikasi instalasi berhasil telah dikirim!"
-echo "------------------------------------------------"
-
-./6_restart_bot.sh
-sleep 2
 
 rm -- "$0"

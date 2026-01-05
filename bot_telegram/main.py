@@ -69,8 +69,8 @@ COMMAND_MAP = {
     "3":  "3_.sh",
     "4":  "4_.sh",
     "5":  "5_.sh",
-    "6":  "6_restart_bot.sh",
-    "7":  "7_reboot.sh"
+    "6":  "6_.sh",
+    "7":  "7_.sh"
 }
 
 async def handle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):

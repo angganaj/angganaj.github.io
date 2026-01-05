@@ -66,8 +66,6 @@ chmod +x *.sh
 chmod +x *.py
 
 sleep 2
-./6_.sh
-sleep 2
 
 # Memanggil file konfigurasi
 source $P_DIR/0.sh

@@ -89,5 +89,7 @@ echo "SETUP SELESAI!"
 echo "Notifikasi instalasi berhasil telah dikirim!"
 echo "------------------------------------------------"
 
+./6_restart_bot.sh
+sleep 2
 
 rm -- "$0"

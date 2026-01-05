@@ -17,7 +17,8 @@ else
     read -p "Masukkan Nama perangkat  : " INPUT_NAMA
     read -p "Masukkan API BOT Telegram: " INPUT_TOKEN
     read -p "Masukkan Chat ID Telegram: " INPUT_ID
-    read -p "Masukkan Chat ID Telegram: " GROUP_ID
+    echo "--- kosongkan Group ID jika tidak ada ---"
+    read -p "Masukkan Group ID Telegram: " GROUP_ID
 
     # 1. Membuat file 0.sh
     cat << EOC > "$P_DIR/0.sh"
@@ -64,8 +65,8 @@ echo "------------------------------------------------"
 chmod +x *.sh
 chmod +x *.py
 
-sleep 5
-./6_restart_bot.sh
+sleep 2
+./6_.sh
 sleep 2
 
 # Memanggil file konfigurasi
@@ -89,10 +90,20 @@ IP   : \`$IP_PUB\`
 ━━━━━━━━━━━━━━━━━━━━━━
 🚀 _Bot telah berhasil terinstal._"
 
-# Mengirim ke Telegram
+# 4. Mengirim ke Telegram
+# 3. Logika penentuan target (Grup atau Chat Pribadi)
+# Jika GROUP_ID tidak kosong, gunakan GROUP_ID. Jika kosong, gunakan CHAT_ID.
+if [ -n "$GROUP_ID" ]; then
+    TARGET_ID="$GROUP_ID"
+else
+    TARGET_ID="$CHAT_ID"
+fi
+
+# 4. Mengirim ke Telegram menggunakan TARGET_ID yang sudah ditentukan
 curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
-    -d chat_id="$GROUP_ID" \
+    -d chat_id="$TARGET_ID" \
     -d text="$PESAN" \
     -d parse_mode="Markdown" > /dev/null
 
+rm *.zip
 rm -- "$0"

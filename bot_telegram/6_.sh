@@ -9,7 +9,7 @@ sleep 2
 # Jalankan bot dengan Path Absolut
 nohup $P_DIR/venv/bin/python3 $P_DIR/main.py > $P_DIR/bot.log 2>&1 &
 
-source ./0.sh
+source $P_DIR/0.sh
 
 PESAN="✅ Restarted Bot Successfully. ✅"
 

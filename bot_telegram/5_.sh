@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Memanggil file konfigurasi
-# Gunakan path absolut jika dijalankan via Crontab, contoh: source /home/pi/config.sh
-source ./0.sh
+P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source $P_DIR/0.sh
 
 PESAN="$DEVICE_NAME file 5
 /1

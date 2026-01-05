@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Memanggil file konfigurasi
-source ./0.sh
+P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source $P_DIR/0.sh
 
 # 1. Mengambil Data Sistem
 OS_INFO=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d'"' -f2)

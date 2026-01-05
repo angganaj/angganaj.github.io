@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Memanggil file konfigurasi (Gunakan full path agar aman di crontab)
-source ./0.sh
+P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source $P_DIR/0.sh
 
 # 1. FUNGSI CEK KONEKSI INTERNET
 echo "Menunggu koneksi internet..."

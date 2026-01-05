@@ -70,7 +70,7 @@ sleep 2
 sleep 2
 
 # Memanggil file konfigurasi
-source ./0.sh
+source $P_DIR/0.sh
 
 # Mengambil data tambahan untuk laporan instalasi
 OS_INFO=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d'"' -f2)

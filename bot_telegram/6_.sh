@@ -3,7 +3,7 @@ P_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd $P_DIR
 
 # Matikan bot lama
-pkill -f "main.py"
+sudo pkill -f "main.py"
 sleep 2
 
 # Jalankan bot dengan Path Absolut

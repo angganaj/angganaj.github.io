@@ -78,12 +78,17 @@ async def handle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     allowed_ids = [conf.get("CHAT_ID"), conf.get("GROUP_ID")]
     
     if user_chat_id in allowed_ids:
-        # Mengambil nama perintah yang diketik (misal: 'status')
-        cmd_name = update.message.text.split()[0].replace("/", "")
+        # MENGAMBIL PESAN DAN MEMBERSIHKAN USERNAME BOT
+        # Contoh: "/1@my_bot" menjadi "1"
+        raw_cmd = update.message.text.split()[0].replace("/", "")
+        cmd_name = raw_cmd.split("@")[0] # Mengambil teks sebelum karakter '@'
+        
         script_name = COMMAND_MAP.get(cmd_name)
         
         if not script_name:
             return
+        
+        # ... sisa kode di bawahnya tetap sama ...
 
         script_path = os.path.join(BASE_DIR, script_name)
         dev_name = conf.get("DEVICE_NAME", "Unknown")

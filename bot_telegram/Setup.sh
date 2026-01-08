@@ -63,8 +63,8 @@ echo "SETUP SELESAI!"
 echo "Notifikasi instalasi berhasil telah dikirim!"
 echo "------------------------------------------------"
 
-chmod +x *.sh
-chmod +x *.py
+sudo chmod +x *.sh
+sudo chmod +x *.py
 
 sleep 2
 

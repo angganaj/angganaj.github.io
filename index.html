@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Makan Bergizi Gratis (MBG) Hari Ini</title>
+    <title>Foto Menu MBG - SPPG PASANGGRAHAN BARU 005</title>
     <style>
-        /* Reset & Font */
+        /* Reset & Base Style */
         * {
             margin: 0;
             padding: 0;
@@ -14,195 +14,133 @@
         }
 
         body {
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             color: #1e293b;
             line-height: 1.6;
         }
 
-        /* Navbar */
+        /* Header / Banner SPPG */
         header {
-            background-color: #0284c7;
-            color: white;
-            padding: 1.2rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-
-        .logo {
-            font-size: 1.4rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tag-badge {
-            background-color: #e0f2fe;
-            color: #0369a1;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* Layout Main */
-        container {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
-            display: block;
-        }
-
-        /* Card Menu Hari Ini */
-        .today-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            margin-bottom: 40px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .today-header {
             background: linear-gradient(135deg, #0284c7, #0369a1);
             color: white;
-            padding: 20px 30px;
+            padding: 1.2rem 5%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            gap: 15px;
         }
 
-        .today-header h2 {
+        /* Logo BGN Style */
+        .logo-bgn {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+            background-color: white;
+            border-radius: 50%;
+            padding: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .header-text {
+            text-align: left;
+        }
+
+        .sppg-title {
             font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
         }
 
-        .date-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 15px;
-            border-radius: 8px;
-            font-weight: bold;
+        .sub-title {
+            background-color: rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 4px;
         }
 
-        .menu-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .menu-content {
-                grid-template-columns: 1fr;
+        /* Responsive Header untuk HP */
+        @media (max-width: 600px) {
+            .header-content {
+                flex-direction: row;
+                text-align: left;
+            }
+            .sppg-title {
+                font-size: 1.2rem;
+            }
+            .logo-bgn {
+                width: 45px;
+                height: 45px;
             }
         }
 
-        .photo-box {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid #e2e8f0;
+        /* Container Layout */
+        .container {
+            max-width: 900px;
+            margin: 25px auto;
+            padding: 0 15px;
         }
 
-        .photo-box img {
+        /* Top Bar Tanggal Otomatis */
+        .date-bar {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .date-label {
+            font-weight: bold;
+            color: #0369a1;
+        }
+
+        .live-date {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        /* WADAH FOTO MENU UTAMA */
+        .photo-card {
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Tampilan Foto */
+        .menu-image {
             width: 100%;
-            height: 100%;
-            max-height: 350px;
+            height: auto;
+            max-height: 650px;
             object-fit: cover;
             display: block;
         }
 
         .photo-caption {
-            position: absolute;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            width: 100%;
-            padding: 8px;
-            text-align: center;
-            font-size: 0.85rem;
-        }
-
-        /* Detail Nutrisi */
-        .nutrition-list h3 {
-            color: #0f172a;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 8px;
-        }
-
-        .item-group {
-            margin-bottom: 12px;
-        }
-
-        .item-title {
-            font-weight: bold;
-            color: #0369a1;
-            font-size: 0.95rem;
-        }
-
-        .item-desc {
-            color: #475569;
-        }
-
-        /* Status Kebersihan & Gizi */
-        .meta-info {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px dashed #cbd5e1;
-        }
-
-        .badge-status {
-            background-color: #dcfce7;
-            color: #15803d;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        /* Jadwal Mingguan */
-        .weekly-section {
-            margin-top: 40px;
-        }
-
-        .weekly-section h3 {
-            margin-bottom: 20px;
-            color: #1e293b;
-        }
-
-        .grid-weekly {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-        }
-
-        .day-card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            text-align: center;
-        }
-
-        .day-card.active {
-            border: 2px solid #0284c7;
-            background-color: #f0f9ff;
-        }
-
-        .day-title {
-            font-weight: bold;
-            color: #0284c7;
-            margin-bottom: 5px;
-        }
-
-        .day-menu {
-            font-size: 0.85rem;
+            background-color: #ffffff;
             color: #64748b;
+            text-align: center;
+            padding: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-top: 1px solid #f1f5f9;
         }
 
         /* Footer */
@@ -211,109 +149,63 @@
             padding: 30px;
             color: #64748b;
             font-size: 0.85rem;
-            margin-top: 50px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- Header SPPG dengan Logo BGN -->
     <header>
-        <div class="logo">
-            <span>🍱 Info MBG</span>
-            <span class="tag-badge">SPPG / Dapur Unit #01</span>
-        </div>
-        <div>
-            <small>Program Makan Bergizi Gratis</small>
+        <div class="header-content">
+            <!-- Logo BGN (Bisa ganti file logo-bgn.png jika punya file lokal di GitHub) -->
+            <img class="logo-bgn" src="https://www.bgn.go.id/logo-bgn.png" alt="Logo BGN" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Logo_Badan_Gizi_Nasional.png/480px-Logo_Badan_Gizi_Nasional.png'">
+            
+            <div class="header-text">
+                <div class="sppg-title">SPPG PASANGGRAHAN BARU 005</div>
+                <div class="sub-title">Program Makan Bergizi Gratis (MBG)</div>
+            </div>
         </div>
     </header>
 
-    <container>
-        <!-- Card Menu Utama Hari Ini -->
-        <div class="today-card">
-            <div class="today-header">
-                <h2>MENU HARI INI</h2>
-                <div class="date-badge" id="current-date">Senin, 14 September 2026</div>
-            </div>
-
-            <div class="menu-content">
-                <!-- Foto Menu Makanan -->
-                <div class="photo-box">
-                    <!-- GANTI URL GAMBAR DI BEWAH DENGAN FOTO ASLI MAKANAN ANDA -->
-                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" alt="Foto Menu Makan Bergizi Gratis Hari Ini">
-                    <div class="photo-caption">Dokumentasi Menu Asli - Disajikan Pukul 10:00 WIB</div>
-                </div>
-
-                <!-- Detail Komponen Menu & Gizi -->
-                <div class="nutrition-list">
-                    <h3>Komponen Sajian Nutrisi</h3>
-                    
-                    <div class="item-group">
-                        <div class="item-title">🍚 Karbohidrat</div>
-                        <div class="item-desc">Nasi Putih (Porsi disesuaikan jenjang)</div>
-                    </div>
-
-                    <div class="item-group">
-                        <div class="item-title">🍗 Protein Utama</div>
-                        <div class="item-desc">Ayam Goreng Lengkuas / Semur Telur</div>
-                    </div>
-
-                    <div class="item-group">
-                        <div class="item-title">🥦 Sayur & Nabati</div>
-                        <div class="item-desc">Tumis Buncis Wortel + Tahu Tempe</div>
-                    </div>
-
-                    <div class="item-group">
-                        <div class="item-title">🍌 Buah-buahan</div>
-                        <div class="item-desc">1 Buah Pisang Muli / Jeruk Segar</div>
-                    </div>
-
-                    <div class="item-group">
-                        <div class="item-title">🥛 Pelengkap Nutrisi</div>
-                        <div class="item-desc">Susu UHT / Mineral</div>
-                    </div>
-
-                    <div class="meta-info">
-                        <span class="badge-status">✓ Layak Edar & Steril</span>
-                        <span class="badge-status">✓ Standar AKG Terpenuhi</span>
-                    </div>
-                </div>
-            </div>
+    <div class="container">
+        
+        <!-- Tanggal Otomatis Hari Ini -->
+        <div class="date-bar">
+            <span class="date-label">📅 Menu Hari Ini:</span>
+            <span class="live-date" id="auto-date">Memuat Tanggal...</span>
         </div>
 
-        <!-- Jadwal / Prediksi Menu 1 Minggu -->
-        <div class="weekly-section">
-            <h3>Jadwal Menu Minggu Ini</h3>
-            <div class="grid-weekly">
-                <div class="day-card active">
-                    <div class="day-title">Senin</div>
-                    <div class="day-menu">Ayam Goreng, Tumis Buncis, Pisang, Susu</div>
-                </div>
-                <div class="day-card">
-                    <div class="day-title">Selasa</div>
-                    <div class="day-menu">Ikan Kembung Balado, Sayur Asem, Semangka</div>
-                </div>
-                <div class="day-card">
-                    <div class="day-title">Rabu</div>
-                    <div class="day-menu">Sup Ayam Komplit, Tahu Goreng, Jeruk, Susu</div>
-                </div>
-                <div class="day-card">
-                    <div class="day-title">Kamis</div>
-                    <div class="day-menu">Daging Semur, Tumis Capcay, Melon</div>
-                </div>
-                <div class="day-card">
-                    <div class="day-title">Jumat</div>
-                    <div class="day-menu">Nasi Kuning / Telur Dadar, Tumis Kacang, Pisang</div>
-                </div>
-            </div>
+        <!-- Wadah Gambar Sajian -->
+        <div class="photo-card">
+            <!-- GANTI FILE GAMBAR DI GITHUB DENGAN NAMA 'menu-hari-ini.jpg' -->
+            <img class="menu-image" src="menu-hari-ini.jpg" alt="Foto Sajian Menu MBG SPPG PASANGGRAHAN BARU 005" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1000&q=80'">
+            <div class="photo-caption">Dokumentasi Sajian Resmi SPPG PASANGGRAHAN BARU 005</div>
         </div>
-    </container>
+
+    </div>
 
     <!-- Footer -->
     <footer>
-        <p>© 2026 Layanan Informasi Makan Bergizi Gratis (MBG).</p>
-        <p>Diperbarui setiap hari kerja oleh Pengelola Dapur SPPG.</p>
+        <p>© SPPG PASANGGRAHAN BARU 005 - Pengelolaan Makan Bergizi Gratis</p>
     </footer>
+
+    <!-- Script Tanggal Otomatis -->
+    <script>
+        function setHariIni() {
+            const opsiTanggal = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const hariIni = new Date().toLocaleDateString('id-ID', opsiTanggal);
+            document.getElementById('auto-date').textContent = hariIni;
+        }
+
+        // Jalankan script saat halaman dibuka
+        setHariIni();
+    </script>
 
 </body>
 </html>
